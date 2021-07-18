@@ -1,7 +1,7 @@
 from typing import final
 from pyalgotrade.barfeed import quandlfeed
 
-from Strategies.ichimoku_cloud import IchimokuCloud
+from strategy import Strategy
 
 # Importing CSV as a bar feed
 feed = quandlfeed.Feed()
@@ -27,7 +27,7 @@ feed.addBarsFromCSV("msft", "Data/Msft/WIKI-Msft-2018-quandl.csv")
 
 # Evaluating Strategy
 starting_equity = 1000
-strategy = IchimokuCloud(feed, "msft", starting_equity)
+strategy = Strategy(feed, "msft", starting_equity)
 strategy.run()
 final_equity = strategy.getBroker().getEquity()
 
