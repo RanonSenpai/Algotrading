@@ -3,7 +3,7 @@ from pyalgotrade.strategy import position
 
 # Importing Strategies and Banks
 from bank import Bank
-from Strategies.IchimokuCloud import IchimokuCloud
+from Strategies.IchimokuCloudStrategy import IchimokuCloudStrategy
 
 # Strategy Compiler
 class Strategy(strategy.BacktestingStrategy):
@@ -16,7 +16,7 @@ class Strategy(strategy.BacktestingStrategy):
         
         # Strategies
         close_data_series = feed[instrument].getCloseDataSeries()
-        self.__ichimioku_cloud = IchimokuCloud(close_data_series)
+        self.__ichimioku_cloud = IchimokuCloudStrategy(close_data_series)
 
     def onBars(self, bars):
         bar = bars[self.__instrument]

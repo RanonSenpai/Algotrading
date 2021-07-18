@@ -1,7 +1,7 @@
 from pyalgotrade import plotter
 from pyalgotrade.barfeed import quandlfeed
 from pyalgotrade.stratanalyzer import returns
-from Strategies.pullback_strategies import LarryConnorPullbackStrategy
+from strategy import Strategy
 
 # Load the bar feed from the CSV file
 feed = quandlfeed.Feed()
@@ -27,7 +27,7 @@ feed.addBarsFromCSV("msft", "Data/Msft/WIKI-Msft-2018-quandl.csv")
 
 # Evaluate the strategy with the feed's bars.
 starting_equity = 1000
-myStrategy = LarryConnorPullbackStrategy(feed, "msft", starting_equity)
+myStrategy = Strategy(feed, "msft", starting_equity)
 
 # Attach a returns analyzers to the strategy.
 returnsAnalyzer = returns.Returns()
