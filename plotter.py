@@ -1,9 +1,9 @@
-from typing import final
+from pyalgotrade import plotter
 from pyalgotrade.barfeed import quandlfeed
+from pyalgotrade.stratanalyzer import returns
+from Strategies.pullback_strategies import LarryConnorPullbackStrategy
 
-from Strategies.ichimoku_cloud import IchimokuCloud
-
-# Importing CSV as a bar feed
+# Load the bar feed from the CSV file
 feed = quandlfeed.Feed()
 feed.addBarsFromCSV("msft", "Data/Msft/WIKI-Msft-2000-quandl.csv")
 feed.addBarsFromCSV("msft", "Data/Msft/WIKI-Msft-2001-quandl.csv")
@@ -25,15 +25,24 @@ feed.addBarsFromCSV("msft", "Data/Msft/WIKI-Msft-2016-quandl.csv")
 feed.addBarsFromCSV("msft", "Data/Msft/WIKI-Msft-2017-quandl.csv")
 feed.addBarsFromCSV("msft", "Data/Msft/WIKI-Msft-2018-quandl.csv")
 
-# Evaluating Strategy
+# Evaluate the strategy with the feed's bars.
 starting_equity = 1000
-strategy = IchimokuCloud(feed, "msft", starting_equity)
-strategy.run()
-final_equity = strategy.getBroker().getEquity()
+myStrategy = LarryConnorPullbackStrategy(feed, "msft", starting_equity)
 
-print('''
-    2000 - 2018 (MSFT)
-    -------------------------
-    Starting Equity : %.2f
-    Final Equity : %.2f
-''' % (starting_equity, final_equity))
+# Attach a returns analyzers to the strategy.
+returnsAnalyzer = returns.Returns()
+myStrategy.attachAnalyzer(returnsAnalyzer)
+
+# Attach the plotter to the strategy.
+plt = plotter.StrategyPlotter(myStrategy)
+# Include the SMA in the instrument's subplot to get it displayed along with the closing prices.
+# plt.getInstrumentSubplot("msft").addDataSeries("SMA", myStrategy.getSMA())
+# Plot the simple returns on each bar.
+plt.getOrCreateSubplot("returns").addDataSeries("Simple returns", returnsAnalyzer.getReturns())
+
+# Run the strategy.
+myStrategy.run()
+myStrategy.info("Final portfolio value: $%.2f" % myStrategy.getResult())
+
+# Plot the strategy.
+plt.plot()
